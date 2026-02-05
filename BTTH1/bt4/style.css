@@ -1,0 +1,130 @@
+body {
+    font-family: Arial;
+    background: #f2f2f2;
+    margin: 0;
+}
+
+/* HEADER */
+.header {
+    background: #222;
+    color: white;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+}
+
+.logo {
+    font-weight: bold;
+    font-size: 20px;
+    margin-right: 30px;
+}
+
+.menu a {
+    color: white;
+    margin-right: 15px;
+    text-decoration: none;
+}
+
+.search {
+    margin-left: auto;
+}
+
+.search input {
+    padding: 5px;
+}
+
+.search button {
+    padding: 5px 10px;
+}
+
+/* MAIN */
+.container {
+    width: 90%;
+    margin: 20px auto;
+    background: white;
+    padding: 20px;
+}
+
+/* TITLE */
+.title-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.btn-add {
+    background: #1e90ff;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+}
+
+/* TABLE */
+.employee-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+.employee-table th,
+.employee-table td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: center;
+}
+
+.employee-table th {
+    background: #f5f5f5;
+}
+
+.btn-edit {
+    background: orange;
+    border: none;
+    padding: 5px;
+}
+
+.btn-delete {
+    background: red;
+    color: white;
+    border: none;
+    padding: 5px;
+}
+
+/* FORM */
+.form-box {
+    margin-top: 30px;
+    border: 1px solid #ccc;
+    padding: 15px;
+}
+
+.form-table {
+    width: 100%;
+}
+
+.form-table td {
+    padding: 8px;
+}
+
+.form-table input,
+.form-table select {
+    width: 95%;
+    padding: 5px;
+}
+
+.form-action {
+    text-align: right;
+}
+
+.btn-save {
+    background: green;
+    color: white;
+    padding: 6px 12px;
+    border: none;
+}
+
+.btn-cancel {
+    background: gray;
+    color: white;
+    padding: 6px 12px;
+    border: none;
+}
