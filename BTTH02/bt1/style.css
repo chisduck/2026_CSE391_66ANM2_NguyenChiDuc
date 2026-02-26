@@ -1,0 +1,87 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    padding: 40px;
+}
+
+/* khung ngoài */
+.contact-box {
+    border: 2px solid black;
+    padding: 25px;
+}
+
+/* tiêu đề */
+.title {
+    margin-bottom: 25px;
+    font-size: 18px;
+}
+
+/* nhóm 2 ô ngang */
+.inline-group {
+    display: flex;
+}
+
+/* mỗi ô trong nhóm */
+.field {
+    flex-basis: 50%;
+}
+
+.field:first-child {
+    padding-right: 10px;
+}
+
+.field:last-child {
+    padding-left: 10px;
+}
+
+/* ô full width */
+.block-field {
+    margin-top: 15px;
+}
+
+/* input chung */
+input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #cfcfcf;
+}
+
+/* textarea */
+textarea {
+    width: 100%;
+    height: 220px;
+    padding: 10px;
+    border: 1px solid #cfcfcf;
+    resize: none;
+}
+
+/* footer form */
+.form-footer {
+    display: flex;
+    margin-top: 20px;
+    align-items: center;
+}
+
+/* đẩy text sang phải */
+.form-footer small {
+    margin-left: auto;
+    color: #777;
+}
+
+/* button */
+button {
+    background-color: #6db4d8;
+    border: none;
+    padding: 10px 18px;
+    color: white;
+    cursor: pointer;
+}
+
+button:hover {
+    opacity: 0.9;
+}
