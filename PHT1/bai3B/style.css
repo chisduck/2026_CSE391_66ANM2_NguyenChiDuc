@@ -1,0 +1,24 @@
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3 cột bằng nhau */
+  gap: 16px;
+  max-width: 1200px;
+  margin: 40px auto;
+}
+
+/* Style từng ô */
+.item {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 150px;
+  font-size: 2rem;
+  border-radius: 8px;
+}
+
+/* Responsive tự động */
+.gallery {
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
