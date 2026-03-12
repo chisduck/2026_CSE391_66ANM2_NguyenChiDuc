@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Form đăng ký nâng cấp</title>
+
+<style>
+body{
+font-family:Arial;
+background:#eef2f7;
+padding:40px;
+}
+
+.box{
+width:420px;
+margin:auto;
+background:white;
+padding:25px;
+border-radius:8px;
+}
+
+.field{
+margin-bottom:16px;
+}
+
+label{
+display:block;
+margin-bottom:4px;
+}
+
+input{
+width:100%;
+padding:8px;
+border:1px solid #ccc;
+border-radius:4px;
+}
+
+.error{
+font-size:13px;
+color:#e11d48;
+display:none;
+}
+
+.valid{
+border-color:#16a34a;
+}
+
+.invalid{
+border-color:#e11d48;
+}
+
+.counter{
+font-size:12px;
+text-align:right;
+}
+
+.strength{
+height:6px;
+background:#ddd;
+margin-top:4px;
+border-radius:4px;
+overflow:hidden;
+}
+
+.strength-bar{
+height:100%;
+width:0%;
+transition:0.3s;
+}
+
+.weak{background:#dc2626;}
+.medium{background:#f59e0b;}
+.strong{background:#16a34a;}
+
+.password-wrap{
+position:relative;
+}
+
+.toggle{
+position:absolute;
+right:10px;
+top:8px;
+cursor:pointer;
+font-size:14px;
+}
+
+button{
+width:100%;
+padding:10px;
+background:#2563eb;
+color:white;
+border:none;
+border-radius:4px;
+cursor:pointer;
+}
+
+.success{
+text-align:center;
+color:#16a34a;
+font-size:18px;
+}
+</style>
+
+</head>
+<body>
+
+<div class="box" id="formBox">
+
+<h2>Đăng ký tài khoản</h2>
+
+<form id="form">
+
+<div class="field">
+<label>Họ và tên</label>
+<input id="fullname">
+<div class="counter" id="nameCount">0/50</div>
+<span class="error" id="fullnameError"></span>
+</div>
+
+<div class="field">
+<label>Email</label>
+<input id="email">
+<span class="error" id="emailError"></span>
+</div>
+
+<div class="field">
+<label>Mật khẩu</label>
+
+<div class="password-wrap">
+<input type="password" id="password">
+<span class="toggle" id="togglePass">👁</span>
+</div>
+
+<div class="strength">
+<div class="strength-bar" id="strengthBar"></div>
+</div>
+
+<span class="error" id="passwordError"></span>
+</div>
+
+<button type="submit">Đăng ký</button>
+
+</form>
+
+</div>
+
+<div id="successBox"></div>
+
+<script>
+
+const nameRegex=/^[a-zA-ZÀ-ỹ\s]+$/;
+const emailRegex=/^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+function showError(id,msg){
+const input=document.getElementById(id);
+const span=document.getElementById(id+"Error");
+
+input.classList.add("invalid");
+input.classList.remove("valid");
+
+span.textContent=msg;
+span.style.display="block";
+}
+
+function clearError(id){
+const input=document.getElementById(id);
+const span=document.getElementById(id+"Error");
+
+input.classList.remove("invalid");
+input.classList.add("valid");
+
+span.style.display="none";
+}
+
+function validateName(){
+
+const v=document.getElementById("fullname").value.trim();
+
+if(v===""){
+showError("fullname","Nhập họ tên");
+return false;
+}
+
+if(v.length<3){
+showError("fullname","Ít nhất 3 ký tự");
+return false;
+}
+
+if(!nameRegex.test(v)){
+showError("fullname","Chỉ chứa chữ cái");
+return false;
+}
+
+clearError("fullname");
+return true;
+
+}
+
+function validateEmail(){
+
+const v=document.getElementById("email").value.trim();
+
+if(v===""){
+showError("email","Nhập email");
+return false;
+}
+
+if(!emailRegex.test(v)){
+showError("email","Email không hợp lệ");
+return false;
+}
+
+clearError("email");
+return true;
+
+}
+
+function validatePassword(){
+
+const v=document.getElementById("password").value;
+
+if(v.length<8){
+showError("password","Mật khẩu ≥ 8 ký tự");
+return false;
+}
+
+clearError("password");
+return true;
+
+}
+
+document.getElementById("fullname").addEventListener("input",function(){
+
+const len=this.value.length;
+document.getElementById("nameCount").textContent=len+"/50";
+
+if(len>50){
+document.getElementById("nameCount").style.color="#dc2626";
+}else{
+document.getElementById("nameCount").style.color="#000";
+}
+
+});
+
+document.getElementById("password").addEventListener("input",function(){
+
+const v=this.value;
+const bar=document.getElementById("strengthBar");
+
+let score=0;
+
+if(v.length>=8)score++;
+if(/[A-Z]/.test(v))score++;
+if(/[a-z]/.test(v))score++;
+if(/[0-9]/.test(v))score++;
+if(/[^A-Za-z0-9]/.test(v))score++;
+
+if(score<=2){
+bar.style.width="33%";
+bar.className="strength-bar weak";
+}
+else if(score<=4){
+bar.style.width="66%";
+bar.className="strength-bar medium";
+}
+else{
+bar.style.width="100%";
+bar.className="strength-bar strong";
+}
+
+});
+
+document.getElementById("togglePass").onclick=function(){
+
+const p=document.getElementById("password");
+
+if(p.type==="password"){
+p.type="text";
+}else{
+p.type="password";
+}
+
+};
+
+document.getElementById("fullname").addEventListener("blur",validateName);
+document.getElementById("email").addEventListener("blur",validateEmail);
+document.getElementById("password").addEventListener("blur",validatePassword);
+
+document.getElementById("form").addEventListener("submit",function(e){
+
+e.preventDefault();
+
+const ok=
+validateName() &
+validateEmail() &
+validatePassword();
+
+if(ok){
+
+const name=document.getElementById("fullname").value;
+
+document.getElementById("formBox").style.display="none";
+
+document.getElementById("successBox").innerHTML=
+`<div class="success">
+Đăng ký thành công 🎉 <br>
+Chào mừng <b>${name}</b>
+</div>`;
+
+}
+
+});
+
+</script>
+
+</body>
+</html>

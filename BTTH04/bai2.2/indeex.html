@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Đặt hàng</title>
+
+<style>
+body{
+    font-family:Arial;
+    background:#f4f6fa;
+    padding:40px;
+}
+
+.box{
+    width:480px;
+    margin:auto;
+    background:white;
+    padding:25px;
+    border-radius:8px;
+}
+
+.field{
+    margin-bottom:15px;
+}
+
+label{
+    display:block;
+    margin-bottom:5px;
+}
+
+input,select,textarea{
+    width:100%;
+    padding:8px;
+    border:1px solid #ccc;
+    border-radius:4px;
+}
+
+.error{
+    color:#e11d48;
+    font-size:13px;
+    display:none;
+}
+
+textarea{
+    resize:none;
+}
+
+.count{
+    font-size:12px;
+    text-align:right;
+}
+
+.count.over{
+    color:#e11d48;
+}
+
+button{
+    padding:8px 14px;
+    border:none;
+    background:#2563eb;
+    color:white;
+    border-radius:4px;
+    cursor:pointer;
+}
+
+.total{
+    font-weight:bold;
+    margin-top:8px;
+}
+
+.confirm-box{
+    display:none;
+    margin-top:20px;
+    border:1px solid #ccc;
+    padding:15px;
+    border-radius:6px;
+    background:#f9fafb;
+}
+
+.success{
+    text-align:center;
+    font-size:18px;
+    color:#16a34a;
+}
+</style>
+</head>
+
+<body>
+
+<div class="box" id="formBox">
+
+<h2>Form đặt hàng</h2>
+
+<form id="orderForm">
+
+<div class="field">
+<label>Sản phẩm</label>
+<select id="product">
+<option value="">-- Chọn sản phẩm --</option>
+<option value="ao">Áo</option>
+<option value="quan">Quần</option>
+<option value="giay">Giày</option>
+</select>
+<span class="error" id="productError"></span>
+</div>
+
+<div class="field">
+<label>Số lượng</label>
+<input id="qty" type="number">
+<span class="error" id="qtyError"></span>
+</div>
+
+<div class="field">
+<label>Ngày giao</label>
+<input id="date" type="date">
+<span class="error" id="dateError"></span>
+</div>
+
+<div class="field">
+<label>Địa chỉ giao</label>
+<input id="address">
+<span class="error" id="addressError"></span>
+</div>
+
+<div class="field">
+<label>Ghi chú</label>
+<textarea id="note" rows="3"></textarea>
+<div class="count" id="noteCount">0/200</div>
+<span class="error" id="noteError"></span>
+</div>
+
+<div class="field">
+<label>Thanh toán</label>
+<label><input type="radio" name="pay" value="COD"> COD</label>
+<label><input type="radio" name="pay" value="Bank"> Chuyển khoản</label>
+<label><input type="radio" name="pay" value="Wallet"> Ví điện tử</label>
+<span class="error" id="payError"></span>
+</div>
+
+<div class="total">
+Tổng tiền: <span id="total">0</span> VND
+</div>
+
+<br>
+<button type="submit">Đặt hàng</button>
+
+</form>
+
+<div class="confirm-box" id="confirmBox">
+<div id="summary"></div>
+<br>
+<button id="confirmBtn">Xác nhận</button>
+<button id="cancelBtn">Hủy</button>
+</div>
+
+</div>
+
+<div id="successBox"></div>
+
+<script>
+
+const prices={
+ao:150000,
+quan:200000,
+giay:350000
+};
+
+const product=document.getElementById("product");
+const qty=document.getElementById("qty");
+const totalEl=document.getElementById("total");
+
+function formatMoney(n){
+return Number(n).toLocaleString("vi-VN");
+}
+
+function calcTotal(){
+
+const p=product.value;
+const q=Number(qty.value);
+
+if(prices[p] && q>0){
+const total=prices[p]*q;
+totalEl.textContent=formatMoney(total);
+}else{
+totalEl.textContent="0";
+}
+
+}
+
+product.addEventListener("change",calcTotal);
+qty.addEventListener("input",calcTotal);
+
+function showError(id,msg){
+const el=document.getElementById(id+"Error");
+el.textContent=msg;
+el.style.display="block";
+}
+
+function clearError(id){
+const el=document.getElementById(id+"Error");
+el.style.display="none";
+}
+
+function validateProduct(){
+if(product.value===""){
+showError("product","Chọn sản phẩm");
+return false;
+}
+clearError("product");
+return true;
+}
+
+function validateQty(){
+
+const v=Number(qty.value);
+
+if(!Number.isInteger(v) || v<1 || v>99){
+showError("qty","Số lượng 1-99");
+return false;
+}
+
+clearError("qty");
+return true;
+}
+
+function validateDate(){
+
+const value=document.getElementById("date").value;
+
+if(value===""){
+showError("date","Chọn ngày giao");
+return false;
+}
+
+const today=new Date();
+const select=new Date(value);
+
+const diff=(select-today)/(1000*60*60*24);
+
+if(diff<0){
+showError("date","Không chọn ngày quá khứ");
+return false;
+}
+
+if(diff>30){
+showError("date","Không quá 30 ngày");
+return false;
+}
+
+clearError("date");
+return true;
+
+}
+
+function validateAddress(){
+
+const v=document.getElementById("address").value.trim();
+
+if(v.length<10){
+showError("address","Địa chỉ ≥ 10 ký tự");
+return false;
+}
+
+clearError("address");
+return true;
+}
+
+function validateNote(){
+
+const v=document.getElementById("note").value;
+
+if(v.length>200){
+showError("note","Tối đa 200 ký tự");
+return false;
+}
+
+clearError("note");
+return true;
+}
+
+function validatePay(){
+
+const p=document.querySelector("input[name='pay']:checked");
+
+if(!p){
+showError("pay","Chọn phương thức thanh toán");
+return false;
+}
+
+clearError("pay");
+return true;
+}
+
+document.getElementById("note").addEventListener("input",function(){
+
+const len=this.value.length;
+
+const count=document.getElementById("noteCount");
+
+count.textContent=len+"/200";
+
+if(len>200){
+count.classList.add("over");
+}else{
+count.classList.remove("over");
+}
+
+});
+
+document.getElementById("orderForm").addEventListener("submit",function(e){
+
+e.preventDefault();
+
+const ok=
+validateProduct() &
+validateQty() &
+validateDate() &
+validateAddress() &
+validateNote() &
+validatePay();
+
+if(ok){
+
+const p=product.options[product.selectedIndex].text;
+const q=qty.value;
+const total=totalEl.textContent;
+const d=document.getElementById("date").value;
+
+document.getElementById("summary").innerHTML=
+`
+<b>Sản phẩm:</b> ${p}<br>
+<b>Số lượng:</b> ${q}<br>
+<b>Tổng tiền:</b> ${total} VND<br>
+<b>Ngày giao:</b> ${d}
+`;
+
+document.getElementById("confirmBox").style.display="block";
+
+}
+
+});
+
+document.getElementById("cancelBtn").onclick=function(){
+document.getElementById("confirmBox").style.display="none";
+};
+
+document.getElementById("confirmBtn").onclick=function(){
+
+document.getElementById("formBox").style.display="none";
+
+document.getElementById("successBox").innerHTML=
+`<div class="success">
+Đặt hàng thành công 🎉
+</div>`;
+
+};
+
+</script>
+
+</body>
+</html>

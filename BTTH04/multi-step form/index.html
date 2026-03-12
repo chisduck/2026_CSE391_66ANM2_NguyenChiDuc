@@ -1,0 +1,264 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Multi Step Register</title>
+
+    <style>
+      body {
+        font-family: Arial;
+        background: #f2f5f9;
+        padding: 40px;
+      }
+
+      .container {
+        width: 420px;
+        margin: auto;
+        background: white;
+        padding: 25px;
+        border-radius: 8px;
+      }
+
+      .step {
+        display: none;
+      }
+
+      input,
+      select {
+        width: 100%;
+        padding: 8px;
+        margin-top: 4px;
+        margin-bottom: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+      }
+
+      button {
+        padding: 8px 14px;
+        border: none;
+        background: #2563eb;
+        color: white;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+
+      button.secondary {
+        background: #6b7280;
+      }
+
+      .error {
+        font-size: 13px;
+        color: #dc2626;
+        display: none;
+      }
+
+      .progress {
+        height: 8px;
+        background: #ddd;
+        margin-bottom: 20px;
+        border-radius: 4px;
+        overflow: hidden;
+      }
+
+      .progress-bar {
+        height: 100%;
+        width: 0%;
+        background: #22c55e;
+        transition: 0.3s;
+      }
+
+      .summary {
+        background: #f9fafb;
+        padding: 10px;
+        border-radius: 4px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <h2>Đăng ký tài khoản</h2>
+
+      <div class="progress">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+
+      <form id="multiForm">
+        <!-- STEP 1 -->
+
+        <div class="step">
+          <label>Họ tên</label>
+          <input id="name" />
+          <div class="error" id="nameErr"></div>
+
+          <label>Ngày sinh</label>
+          <input type="date" id="birth" />
+          <div class="error" id="birthErr"></div>
+
+          <label>Giới tính</label>
+          <select id="gender">
+            <option value="">-- chọn --</option>
+            <option>Nam</option>
+            <option>Nữ</option>
+            <option>Khác</option>
+          </select>
+          <div class="error" id="genderErr"></div>
+
+          <button type="button" onclick="nextStep()">Tiếp theo</button>
+        </div>
+
+        <!-- STEP 2 -->
+
+        <div class="step">
+          <label>Email</label>
+          <input id="email" />
+          <div class="error" id="emailErr"></div>
+
+          <label>Mật khẩu</label>
+          <input type="password" id="password" />
+          <div class="error" id="passErr"></div>
+
+          <label>Xác nhận mật khẩu</label>
+          <input type="password" id="confirm" />
+          <div class="error" id="confirmErr"></div>
+
+          <button type="button" class="secondary" onclick="prevStep()">
+            Quay lại
+          </button>
+          <button type="button" onclick="nextStep()">Tiếp theo</button>
+        </div>
+
+        <!-- STEP 3 -->
+
+        <div class="step">
+          <h3>Xác nhận thông tin</h3>
+
+          <div class="summary" id="summary"></div>
+
+          <button type="button" class="secondary" onclick="prevStep()">
+            Quay lại
+          </button>
+          <button type="submit">Hoàn tất</button>
+        </div>
+      </form>
+    </div>
+
+    <script>
+      let currentStep = 0;
+
+      const steps = document.querySelectorAll(".step");
+
+      function showStep(n) {
+        steps.forEach((step) => (step.style.display = "none"));
+
+        steps[n].style.display = "block";
+
+        document.getElementById("progressBar").style.width =
+          ((n + 1) / steps.length) * 100 + "%";
+      }
+
+      showStep(currentStep);
+
+      function nextStep() {
+        if (!validateStep(currentStep)) return;
+
+        currentStep++;
+
+        if (currentStep == 2) {
+          loadSummary();
+        }
+
+        showStep(currentStep);
+      }
+
+      function prevStep() {
+        currentStep--;
+
+        showStep(currentStep);
+      }
+
+      function showError(id, msg) {
+        const el = document.getElementById(id);
+        el.textContent = msg;
+        el.style.display = "block";
+      }
+
+      function clearError(id) {
+        const el = document.getElementById(id);
+        el.style.display = "none";
+      }
+
+      function validateStep(step) {
+        let ok = true;
+
+        if (step == 0) {
+          const name = document.getElementById("name").value.trim();
+          const birth = document.getElementById("birth").value;
+          const gender = document.getElementById("gender").value;
+
+          if (name.length < 3) {
+            showError("nameErr", "Tên ít nhất 3 ký tự");
+            ok = false;
+          } else clearError("nameErr");
+
+          if (birth === "") {
+            showError("birthErr", "Chọn ngày sinh");
+            ok = false;
+          } else clearError("birthErr");
+
+          if (gender === "") {
+            showError("genderErr", "Chọn giới tính");
+            ok = false;
+          } else clearError("genderErr");
+        }
+
+        if (step == 1) {
+          const email = document.getElementById("email").value.trim();
+          const pass = document.getElementById("password").value;
+          const confirm = document.getElementById("confirm").value;
+
+          const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+          if (!emailRegex.test(email)) {
+            showError("emailErr", "Email không hợp lệ");
+            ok = false;
+          } else clearError("emailErr");
+
+          if (pass.length < 6) {
+            showError("passErr", "Mật khẩu ≥6 ký tự");
+            ok = false;
+          } else clearError("passErr");
+
+          if (confirm !== pass) {
+            showError("confirmErr", "Mật khẩu không khớp");
+            ok = false;
+          } else clearError("confirmErr");
+        }
+
+        return ok;
+      }
+
+      function loadSummary() {
+        const name = document.getElementById("name").value;
+        const birth = document.getElementById("birth").value;
+        const gender = document.getElementById("gender").value;
+        const email = document.getElementById("email").value;
+
+        document.getElementById("summary").innerHTML = `
+<b>Họ tên:</b> ${name} <br>
+<b>Ngày sinh:</b> ${birth} <br>
+<b>Giới tính:</b> ${gender} <br>
+<b>Email:</b> ${email}
+`;
+      }
+
+      document
+        .getElementById("multiForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          alert("Đăng ký thành công 🎉");
+        });
+    </script>
+  </body>
+</html>
