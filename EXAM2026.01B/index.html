@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quản lý nhân hội thảo</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header>
+      <div class="header-container">
+        <h1>HộiThảoHub</h1>
+        <div class="search-box">
+          <input type="text" placeholder="Tìm nhanh..." />
+          <button>Tìm</button>
+        </div>
+        <nav>
+          <a href="#">Trang chủ</a>
+          <a href="#">Danh sách</a>
+          <a href="#">Thêm mới</a>
+          <a href="#">Giới Thiệu</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <div class="content-header">
+        <h2>Bảng điều khiển hội thảo</h2>
+        <button id="btnOpenModal" class="btn-add">+ Thêm mới</button>
+      </div>
+
+      <table id="employeeTable">
+        <thead>
+          <tr>
+            <th>Tên hội thảo</th>
+            <th>Diễn giả</th>
+            <th>Email</th>
+            <th>Ngày tổ chức</th>
+            <th>Địa điểm</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th>Tên hội thảo</th>
+            <th>Diễn giả</th>
+            <th>Email</th>
+            <th>Ngày tổ chức</th>
+            <th>Địa điểm</th>
+          </tr>
+        </tbody>
+      </table>
+    </main>
+
+    <div id="employeeModal" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <span>Thêm hội thảo mới</span>
+          <span class="close-btn">&times;</span>
+        </div>
+        <form id="employeeForm">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Tên hội thảo</label>
+              <input
+                type="text"
+                id="tenSuKien"
+                placeholder="Nhập tên sự kiện"
+                required
+                maxlength="60"
+              />
+            </div>
+            <div class="form-group">
+              <label>Email</label>
+              <input
+                type="email"
+                id="email"
+                placeholder="email@example.com"
+                required
+              />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Diễn giả</label>
+              <input
+                type="text"
+                id="dienGia"
+                placeholder="Họ tên tác giả"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label>Ngày tổ chức</label>
+              <input type="date" id="ngay" required />
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Địa điểm</label>
+            <div class="radio-group">
+              <input
+                type="text"
+                id="diaDiem"
+                placeholder="Hội trường/địa chỉ"
+                required
+              />
+            </div>
+          </div>
+          <div class="form-footer">
+            <button type="submit" class="btn-save">Lưu</button>
+            <button type="button" class="btn-cancel" id="btnCancel">Hủy</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
